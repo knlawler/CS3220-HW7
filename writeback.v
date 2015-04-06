@@ -135,9 +135,15 @@ always @(negedge I_CLOCK) begin
 	O_GSRValue_Valid		<= 0;
 	
 	if (I_LOCK == 1'b1) begin
-		O_CCWEn		<= I_CCWEn; 
-		O_RegWEn 	<= I_RegWEn;
-		O_VRegWEn 	<= I_VRegWEn;   
+		if (I_MEM_Valid) begin
+			O_CCWEn		<= I_CCWEn; 
+			O_RegWEn 	<= I_RegWEn;
+			O_VRegWEn 	<= I_VRegWEn;  
+		end else begin
+			O_CCWEn		<= 1'b0; 
+			O_RegWEn 	<= 1'b0;
+			O_VRegWEn 	<= 1'b0; 
+		end
 	end else begin
 		O_CCWEn		<= 1'b0; 
 		O_RegWEn 	<= 1'b0;
