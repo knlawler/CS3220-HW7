@@ -123,11 +123,9 @@ output reg O_BranchStallSignal;
 
 // Scalar Register File (R0-R7: Integer, R8-R15: Floating-point)
 reg [`REG_WIDTH-1:0] RF[0:`NUM_RF-1];
-reg RF_VALID[0:`NUM_RF-1];
 
 // Vector Register File
 reg [`VREG_WIDTH-1:0] VRF[0:`NUM_VRF-1];
-reg VRF_VALID[0:`NUM_VRF-1];
 
 // Condition Code Register
 reg [2:0] CCValue;
@@ -159,15 +157,11 @@ reg [`VREG_ID_WIDTH-1:0]	DestVRegIdx;
 
 reg[7:0] trav;
 initial begin
-	for (trav = 0; trav < `NUM_RF; trav = trav + 1'b1) begin
+	for (trav = 0; trav < `NUM_RF; trav = trav + 1'b1)
 		RF[trav] = 0;
-		RF_VALID[trav] = 1;  
-	end 
 
-	for (trav = 0; trav < `NUM_VRF; trav = trav + 1'b1) begin
+	for (trav = 0; trav < `NUM_VRF; trav = trav + 1'b1)
 		VRF[trav] = 0;
-		VRF_VALID[trav] = 1;  
-	end 
 
 	CCValue = 0;
 
@@ -200,48 +194,40 @@ always @(*) begin
 		Src2Value = RF[I_IR[11:8]];
 		DestRegIdx = I_IR[23:20];
 	     
-		if ( ((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) || 
-			  ((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite) ||
-			  ((I_IR[11:8]  == I_EDDestRegIdx) && I_EDDestWrite) || 
-			  ((I_IR[11:8]  == I_MDDestRegIdx) && I_MDDestWrite) )
-			dep_stall = 1;
-		else
-			dep_stall = 0; 	
+		dep_stall =
+				((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) ||
+				((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite) ||
+				((I_IR[11:8]  == I_EDDestRegIdx) && I_EDDestWrite) ||
+				((I_IR[11:8]  == I_MDDestRegIdx) && I_MDDestWrite);
 
 	end `OP_ADD_F: begin
 		Src1Value = RF[I_IR[19:16]];
 		Src2Value = RF[I_IR[11:8]];
 		DestRegIdx = I_IR[23:20];
 	     
-		if ( ((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) || 
-			  ((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite) ||
-			  ((I_IR[11:8]  == I_EDDestRegIdx) && I_EDDestWrite) || 
-			  ((I_IR[11:8]  == I_MDDestRegIdx) && I_MDDestWrite) )
-			dep_stall = 1;
-		else
-			dep_stall = 0; 	
+		dep_stall =
+				((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) ||
+				((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite) ||
+				((I_IR[11:8]  == I_EDDestRegIdx) && I_EDDestWrite) ||
+				((I_IR[11:8]  == I_MDDestRegIdx) && I_MDDestWrite);
 
 	end `OP_ADDI_D: begin
 		Src1Value = RF[I_IR[19:16]];
 		Imm = Imm32;
 		DestRegIdx = I_IR[23:20];
 	     
-		if ( ((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) || 
-			  ((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite) )
-			dep_stall = 1;
-		else
-			dep_stall = 0; 	
+		dep_stall =
+				((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) || 
+				((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite);
 
 	end `OP_ADDI_F: begin
 		Src1Value = RF[I_IR[19:16]];
 		Imm = Imm32;
 		DestRegIdx = I_IR[23:20];
 	     
-		if ( ((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) || 
-			  ((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite) )
-			dep_stall = 1;
-		else
-			dep_stall = 0; 
+		dep_stall =
+				((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) || 
+				((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite);
 
 	/*end `OP_VADD: begin 
 
@@ -278,13 +264,11 @@ always @(*) begin
 		Src2Value = RF[I_IR[23:20]];
 		Imm = Imm32;
 
-		if ( ((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) || 
-			  ((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite) ||
-			  ((I_IR[23:20] == I_EDDestRegIdx) && I_EDDestWrite) || 
-			  ((I_IR[23:20] == I_MDDestRegIdx) && I_MDDestWrite) )
-			dep_stall = 1;
-		else
-			dep_stall = 0; 
+		dep_stall =
+				((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) || 
+				((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite) ||
+				((I_IR[23:20] == I_EDDestRegIdx) && I_EDDestWrite) || 
+				((I_IR[23:20] == I_MDDestRegIdx) && I_MDDestWrite);
 
 	end `OP_BRP: begin
 		Imm = Imm32;
@@ -381,14 +365,21 @@ always @(negedge I_CLOCK) begin
 	O_DestVRegIdx 	<= DestVRegIdx;
    
 	if (I_LOCK == 1'b1) begin
-		O_DE_Valid 				<= I_FE_Valid;
-		O_DepStallSignal		<= dep_stall;
-		O_BranchStallSignal	<= br_stall;
+		O_DE_Valid 				<= I_FE_Valid && !dep_stall;
 	end else begin
 		O_DE_Valid 				<= 0;
-		O_DepStallSignal 		<= 0;
-		O_BranchStallSignal	<= 0;
 	end 
+end
+
+// Update signals
+always @(*) begin
+	if (I_LOCK == 1'b1 && I_FE_Valid == 1'b1) begin
+		O_DepStallSignal		= dep_stall;
+		O_BranchStallSignal	= br_stall;
+	end else begin		
+		O_DepStallSignal 		= 0;
+		O_BranchStallSignal	= 0;
+	end
 end
 
 endmodule

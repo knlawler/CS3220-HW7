@@ -89,7 +89,7 @@ output reg									O_GSRValue_Valid;
 // WIRE/REGISTER DECLARATION GOES HERE
 /////////////////////////////////////////
 
-reg [1:0] vertex_point_status;
+/*reg [1:0] vertex_point_status;
 
 // Write back stage should perform
 // graphics pipeline operations
@@ -97,18 +97,18 @@ reg [1:0] vertex_point_status;
    
 reg [29:0] vertex_v1_t;
 reg [29:0] vertex_v2_t;
-reg [29:0] vertex_v3_t;
+reg [29:0] vertex_v3_t;*/
 
 /////////////////////////////////////////
 // INITIAL STATEMENT GOES HERE
 /////////////////////////////////////////
 
-initial begin
+/*initial begin
 	vertex_point_status = 0;
 	vertex_v1_t = 0;
 	vertex_v2_t = 0;
 	vertex_v3_t = 0;
-end
+end*/
 
 /////////////////////////////////////////
 // ALWAYS STATEMENT GOES HERE
@@ -120,34 +120,30 @@ always @(negedge I_CLOCK) begin
 	O_LOCK					<= I_LOCK;
 	O_PC 						<= I_PC;
 	
-	O_CCValue 				<= I_CCValue;
-   
-	O_WriteBackData 		<= I_DestValue;
-	O_WriteBackRegIdx 	<= I_DestRegIdx;
-
-	O_VecDestValue 		<= I_VecDestValue;
-	O_WriteBackVRegIdx 	<= I_DestVRegIdx;
-
 	O_GSRValue				<= 0;
 	O_VertexV1				<= 0;
 	O_VertexV2				<= 0;
 	O_VertexV3				<= 0;
 	O_GSRValue_Valid		<= 0;
+end
+
+always @(*) begin
+	O_CCValue 				= I_CCValue;
+   
+	O_WriteBackData 		= I_DestValue;
+	O_WriteBackRegIdx 	= I_DestRegIdx;
+
+	O_VecDestValue 		= I_VecDestValue;
+	O_WriteBackVRegIdx 	= I_DestVRegIdx;
 	
-	if (I_LOCK == 1'b1) begin
-		if (I_MEM_Valid) begin
-			O_CCWEn		<= I_CCWEn; 
-			O_RegWEn 	<= I_RegWEn;
-			O_VRegWEn 	<= I_VRegWEn;  
-		end else begin
-			O_CCWEn		<= 1'b0; 
-			O_RegWEn 	<= 1'b0;
-			O_VRegWEn 	<= 1'b0; 
-		end
+	if (I_LOCK == 1'b1 && I_MEM_Valid) begin
+		O_CCWEn		= I_CCWEn;
+		O_RegWEn 	= I_RegWEn;
+		O_VRegWEn 	= I_VRegWEn;
 	end else begin
-		O_CCWEn		<= 1'b0; 
-		O_RegWEn 	<= 1'b0;
-		O_VRegWEn 	<= 1'b0; 
+		O_CCWEn		= 1'b0; 
+		O_RegWEn 	= 1'b0;
+		O_VRegWEn 	= 1'b0; 
 	end
 end
    

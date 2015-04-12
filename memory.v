@@ -139,7 +139,7 @@ always @(negedge I_CLOCK) begin
 	O_VecDestValue <= I_VecDestValue;
 	O_DestVRegIdx	<= I_DestVRegIdx;
 	
-	if (I_LOCK == 1'b1) begin
+	if (I_LOCK == 1'b1 && I_EX_Valid) begin
 		O_MEM_Valid 	<= I_EX_Valid;
 		
 		O_RegWEn 		<= I_RegWEn;
@@ -194,7 +194,6 @@ end
    
 /* Write to Memory (Store) */
 always @(negedge I_CLOCK) begin
-
 	if (!I_LOCK) begin
 		HexOut <= 16'hBEEF;
 		LedGOut <= 8'b11111111;

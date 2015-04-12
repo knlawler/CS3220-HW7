@@ -77,13 +77,19 @@ always @(negedge I_CLOCK) begin
 	O_LOCK <= I_LOCK;
 
 	if (I_LOCK == 1'b1) begin
-		O_PC <= (latch_keep) ? O_PC : I_BranchAddrSelect ? I_BranchPC : O_PC + 4;
-		O_IR <= (latch_keep) ? O_IR : IR_out; 
-		O_FE_Valid <= !latch_keep;
+		if (latch_keep) begin
+			O_PC			<= O_PC;
+			O_IR			<= O_IR;
+			O_FE_Valid	<= O_FE_Valid;
+		end else begin
+			O_PC			<= I_BranchAddrSelect ? I_BranchPC : O_PC + `PC_WIDTH'h4;
+			O_IR			<= IR_out;
+			O_FE_Valid	<= 1'b1;
+		end
 	end else begin
-		O_PC <= 0;
-		O_IR <= 0;
-		O_FE_Valid <= 0; 
+		O_PC 			<= 0;
+		O_IR 			<= 0;
+		O_FE_Valid	<= 0; 
 	end
 end
 

@@ -293,6 +293,24 @@ always @(*) begin
 	endcase
 end
 
+always @(*) begin
+	if (I_LOCK == 1'b1 && I_DE_Valid) begin
+		O_CCWEn_Signal					= cc_w_en;
+		O_RegWEn_Signal				= reg_w_en;
+		O_VRegWEn_Signal				= vreg_w_en;
+		
+		O_BranchPC_Signal 			= br_addr;
+		O_BranchAddrSelect_Signal	= is_br;
+	end else begin		
+		O_CCWEn_Signal					= 0;
+		O_RegWEn_Signal				= 0;
+		O_VRegWEn_Signal				= 0;
+		
+		O_BranchPC_Signal 			= 0;
+		O_BranchAddrSelect_Signal	= 0;
+	end
+end
+
 always @(negedge I_CLOCK) begin
 	O_LOCK 			<= I_LOCK;
 	O_Opcode 		<= I_Opcode;
@@ -311,30 +329,19 @@ always @(negedge I_CLOCK) begin
 
 	O_MARValue 		<= mar_value;
 	O_MDRValue 		<= mdr_value;
-	
-	O_BranchPC_Signal 			<= br_addr;
-	O_BranchAddrSelect_Signal	<= is_br;
 
-	if (I_LOCK == 1'b1) begin
+	if (I_LOCK == 1'b1 && I_DE_Valid) begin
 		O_EX_Valid			<= I_DE_Valid;
 	
 		O_CCWEn 				<= cc_w_en;
 		O_RegWEn 			<= reg_w_en;
 		O_VRegWEn 			<= vreg_w_en;
-		
-		O_CCWEn_Signal		<= cc_w_en;
-		O_RegWEn_Signal	<= reg_w_en;
-		O_VRegWEn_Signal	<= vreg_w_en;
 	end else begin 
 		O_EX_Valid			<= 1'b0;
 
 		O_CCWEn				<= 1'b0; 
 		O_RegWEn				<= 1'b0;
 		O_VRegWEn			<= 1'b0; 
-		
-		O_CCWEn_Signal		<= 1'b0;
-		O_RegWEn_Signal	<= 1'b0;
-		O_VRegWEn_Signal	<= 1'b0;
 	end
 end
 
