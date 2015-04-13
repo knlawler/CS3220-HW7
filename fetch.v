@@ -66,7 +66,7 @@ wire [`IR_WIDTH-1:0] IR_out;
 assign IR_out = InstMem[PC_line];
 
 wire latch_keep;
-assign latch_keep = I_BranchStallSignal || I_DepStallSignal;
+assign latch_keep = I_DepStallSignal;
 
 /////////////////////////////////////////
 // ## Note ##
@@ -82,9 +82,9 @@ always @(negedge I_CLOCK) begin
 			O_IR			<= O_IR;
 			O_FE_Valid	<= O_FE_Valid;
 		end else begin
-			O_PC			<= I_BranchAddrSelect ? I_BranchPC : O_PC + `PC_WIDTH'h4;
+			O_PC			<= I_BranchAddrSelect ? I_BranchPC : O_PC + `PC_WIDTH'd4;
 			O_IR			<= IR_out;
-			O_FE_Valid	<= 1'b1;
+			O_FE_Valid	<= !(I_BranchStallSignal || I_BranchAddrSelect);
 		end
 	end else begin
 		O_PC 			<= 0;

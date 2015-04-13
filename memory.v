@@ -194,12 +194,8 @@ end
    
 /* Write to Memory (Store) */
 always @(negedge I_CLOCK) begin
-	if (!I_LOCK) begin
-		HexOut <= 16'hBEEF;
-		LedGOut <= 8'b11111111;
-		LedROut <= 10'b1111111111;
-	end else if (I_EX_Valid) begin
-		if (I_Opcode == `OP_STW) begin
+	if (I_LOCK == 1'b1) begin
+		if (I_EX_Valid && I_Opcode == `OP_STW) begin
 			if (I_MARValue[9:0] == `ADDRHEX)
 				HexOut <= I_MDRValue;
 			else if (I_MARValue[9:0] == `ADDRLEDR)
@@ -209,6 +205,10 @@ always @(negedge I_CLOCK) begin
 			else
 			  DataMem[mar_line_addr] <= I_MDRValue;
 		end
+	end else begin
+		HexOut <= 16'hBEEF;
+		LedGOut <= 8'b11111111;
+		LedROut <= 10'b1111111111;
 	end
 end
 

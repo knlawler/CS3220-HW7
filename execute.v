@@ -54,9 +54,9 @@ input [`IR_WIDTH-1:0]		I_IR;
 input [2:0]						I_CCValue;
 input 							I_DE_Valid;
 
-input signed  [`REG_WIDTH-1:0]	I_Src1Value;
+input signed [`REG_WIDTH-1:0]		I_Src1Value;
 input signed [`REG_WIDTH-1:0]		I_Src2Value;
-input [`REG_WIDTH-1:0]				I_Imm;
+input signed [`REG_WIDTH-1:0]		I_Imm;
 input [3:0]								I_DestRegIdx;
 
 input [`VREG_WIDTH-1:0]				I_VecSrc1Value; 
@@ -213,7 +213,7 @@ always @(*) begin
 		cc_value			= 0;
 		r15pc				= I_PC;
 		vec_dest_value	= 0;
-		mar_value		= I_Src1Value + I_Imm;
+		mar_value		= I_Src1Value + (I_Imm * 1);
 		mdr_value		= I_Src2Value;
 		reg_w_en			= 0;
 		vreg_w_en		= 0;
@@ -222,7 +222,7 @@ always @(*) begin
 		br_addr			= 0;
 
 	end `OP_BRP: begin
-		br_addr 		= I_CCValue == `CC_P ? I_PC + I_Imm : I_PC;
+		br_addr 		= I_CCValue == `CC_P ? I_PC + (I_Imm * 4) : I_PC;
 		r15pc			= br_addr;
 		reg_w_en 	= 0;
 		vreg_w_en	= 0;
@@ -230,7 +230,7 @@ always @(*) begin
 		is_br 		= 1;
 	      
 	end `OP_BRN: begin
-		br_addr 		= I_CCValue == `CC_N ? I_PC + I_Imm : I_PC;
+		br_addr 		= I_CCValue == `CC_N ? I_PC + (I_Imm * 4) : I_PC;
 		r15pc			= br_addr;
 		reg_w_en 	= 0;
 		vreg_w_en	= 0;
@@ -238,7 +238,7 @@ always @(*) begin
 		is_br 		= 1;
 
 	end `OP_BRZ: begin
-		br_addr 		= I_CCValue == `CC_Z ? I_PC + I_Imm : I_PC;
+		br_addr 		= I_CCValue == `CC_Z ? I_PC + (I_Imm * 4) : I_PC;
 		r15pc			= br_addr;
 		reg_w_en 	= 0;
 		vreg_w_en	= 0;
@@ -246,7 +246,7 @@ always @(*) begin
 		is_br 		= 1;
 
 	end `OP_BRNP: begin
-		br_addr 		= I_CCValue != `CC_Z ? I_PC + I_Imm : I_PC;
+		br_addr 		= I_CCValue != `CC_Z ? I_PC + (I_Imm * 4) : I_PC;
 		r15pc			= br_addr;
 		reg_w_en 	= 0;
 		vreg_w_en	= 0;
@@ -254,7 +254,7 @@ always @(*) begin
 		is_br 		= 1;
 
 	end `OP_BRZP: begin
-		br_addr 		= I_CCValue != `CC_N ? I_PC + I_Imm : I_PC;
+		br_addr 		= I_CCValue != `CC_N ? I_PC + (I_Imm * 4) : I_PC;
 		r15pc			= br_addr;
 		reg_w_en 	= 0;
 		vreg_w_en	= 0;
@@ -262,7 +262,7 @@ always @(*) begin
 		is_br 		= 1;
 	  
 	end `OP_BRNZ: begin
-		br_addr 		= I_CCValue != `CC_P ? I_PC + I_Imm : I_PC;
+		br_addr 		= I_CCValue != `CC_P ? I_PC + (I_Imm * 4) : I_PC;
 		r15pc			= br_addr;
 		reg_w_en 	= 0;
 		vreg_w_en	= 0;
@@ -270,7 +270,7 @@ always @(*) begin
 		is_br 		= 1;
 	     
 	end `OP_BRNZP: begin
-		br_addr 		= I_PC + I_Imm;
+		br_addr 		= I_PC + (I_Imm * 4);
 		r15pc			= br_addr;
 		reg_w_en 	= 0;
 		vreg_w_en	= 0;
