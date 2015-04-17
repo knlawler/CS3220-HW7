@@ -178,23 +178,79 @@ always @(*) begin
 		cc_w_en			= 1;
 		is_br				= 0;
 
-	/*end `OP_VADD: begin 
+	end `OP_VADD: begin
+		dest_value 		= I_VecSrc1Value + I_VecSrc2Value;
+		cc_value 		= `toCC(dest_value);
+		r15pc 			= I_PC;
+		reg_w_en			= 0;
+		vreg_w_en		= 1;
+		cc_w_en			= 1;
+		is_br				= 0;
 
 	end `OP_AND_D: begin
+		dest_value 		= I_Src1Value & I_Src2Value;
+		cc_value 		= `toCC(dest_value);
+		r15pc 			= I_PC;
+		reg_w_en			= 1;
+		vreg_w_en		= 0;
+		cc_w_en			= 1;
+		is_br				= 0;
 
 	end `OP_ANDI_D: begin
+		dest_value 		= I_Src1Value & I_Imm;
+		cc_value 		= `toCC(dest_value);
+		r15pc 			= I_PC;
+		reg_w_en			= 1;
+		vreg_w_en		= 0;
+		cc_w_en			= 1;
+		is_br				= 0;
 
-	end `OP_MOV: begin 
+	end `OP_MOV: begin
+		dest_value 		= I_Src1Value;
+		cc_value 		= `toCC(dest_value);
+		r15pc 			= I_PC;
+		reg_w_en			= 1;
+		vreg_w_en		= 0;
+		cc_w_en			= 1;
+		is_br				= 0;	
 
-	end `OP_MOVI_D: begin 
+	end `OP_MOVI_D: begin
+		dest_value 		= I_Imm;
+		cc_value 		= `toCC(dest_value);
+		r15pc 			= I_PC;
+		reg_w_en			= 1;
+		vreg_w_en		= 0;
+		cc_w_en			= 1;
+		is_br				= 0;
 
 	end `OP_MOVI_F: begin 
+		dest_value 		= I_Imm;
+		cc_value 		= `toCC(dest_value);
+		r15pc 			= I_PC;
+		reg_w_en			= 1;
+		vreg_w_en		= 0;
+		cc_w_en			= 1;
+		is_br				= 0;
 
 	end `OP_VMOV: begin 
+		dest_value 		= I_VecSrc1Value;
+		cc_value 		= `toCC(dest_value);
+		r15pc 			= I_PC;
+		reg_w_en			= 0;
+		vreg_w_en		= 1;
+		cc_w_en			= 1;
+		is_br				= 0;
 
-	end `OP_VMOVI: begin 
+	end `OP_VMOVI: begin
+		dest_value 		= I_Imm;
+		cc_value 		= `toCC(dest_value);
+		r15pc 			= I_PC;
+		reg_w_en			= 0;
+		vreg_w_en		= 1;
+		cc_w_en			= 1;
+		is_br				= 0;
 
-	end `OP_CMP: begin
+	/*end `OP_CMP: begin
 	      
 	end `OP_CMPI: begin
 	     

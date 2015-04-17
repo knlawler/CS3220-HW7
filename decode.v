@@ -195,10 +195,10 @@ always @(*) begin
 		DestRegIdx = I_IR[23:20];
 	     
 		dep_stall =
-				((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) ||
-				((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite) ||
-				((I_IR[11:8]  == I_EDDestRegIdx) && I_EDDestWrite) ||
-				((I_IR[11:8]  == I_MDDestRegIdx) && I_MDDestWrite);
+			((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) ||
+			((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite) ||
+			((I_IR[11:8]  == I_EDDestRegIdx) && I_EDDestWrite) ||
+			((I_IR[11:8]  == I_MDDestRegIdx) && I_MDDestWrite);
 
 	end `OP_ADD_F: begin
 		Src1Value = RF[I_IR[19:16]];
@@ -206,10 +206,10 @@ always @(*) begin
 		DestRegIdx = I_IR[23:20];
 	     
 		dep_stall =
-				((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) ||
-				((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite) ||
-				((I_IR[11:8]  == I_EDDestRegIdx) && I_EDDestWrite) ||
-				((I_IR[11:8]  == I_MDDestRegIdx) && I_MDDestWrite);
+			((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) ||
+			((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite) ||
+			((I_IR[11:8]  == I_EDDestRegIdx) && I_EDDestWrite) ||
+			((I_IR[11:8]  == I_MDDestRegIdx) && I_MDDestWrite);
 
 	end `OP_ADDI_D: begin
 		Src1Value = RF[I_IR[19:16]];
@@ -217,8 +217,8 @@ always @(*) begin
 		DestRegIdx = I_IR[23:20];
 	     
 		dep_stall =
-				((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) || 
-				((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite);
+			((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) || 
+			((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite);
 
 	end `OP_ADDI_F: begin
 		Src1Value = RF[I_IR[19:16]];
@@ -226,38 +226,112 @@ always @(*) begin
 		DestRegIdx = I_IR[23:20];
 	     
 		dep_stall =
+			((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) || 
+			((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite);
+
+	end `OP_VADD: begin
+		DestVRegIdx = I_IR[21:16];
+		VecSrc1Value = RF[I_IR[13:8]];
+		VecSrc2Value = RF[I_IR[5:0]];
+		
+		dep_stall =
+			((I_IR[13:8] == I_EDDestVRegIdx) && I_EDDestVWrite) ||
+			((I_IR[13:8] == I_MDDestVRegIdx) && I_MDDestVWrite) ||
+			((I_IR[5:0]  == I_EDDestVRegIdx) && I_EDDestVWrite) ||
+			((I_IR[5:0]  == I_MDDestVRegIdx) && I_MDDestVWrite);
+		
+
+	end `OP_AND_D: begin
+		Src1Value = RF[I_IR[19:16]];
+		Src2Value = RF[I_IR[11:8]];
+		DestRegIdx = I_IR[23:20];
+	     
+		dep_stall =
+			((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) ||
+			((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite) ||
+			((I_IR[11:8]  == I_EDDestRegIdx) && I_EDDestWrite) ||
+			((I_IR[11:8]  == I_MDDestRegIdx) && I_MDDestWrite);
+
+	end `OP_ANDI_D: begin
+		Src1Value = RF[I_IR[19:16]];
+		Imm = Imm32;
+		DestRegIdx = I_IR[23:20];
+	     
+		dep_stall =
+			((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) || 
+			((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite);
+
+	end `OP_MOV: begin
+		Src1Value = RF[I_IR[11:8]];
+		DestRegIdx = I_IR[19:16];
+		
+		dep_stall =
+			((I_IR[11:8] == I_EDDestRegIdx) && I_EDDestWrite) || 
+			((I_IR[11:8] == I_MDDestRegIdx) && I_MDDestWrite);
+
+	end `OP_MOVI_D: begin 
+		DestRegIdx = I_IR[19:16];
+		Imm = Imm32;
+	
+	end `OP_MOVI_F: begin 
+		DestRegIdx = I_IR[19:16];
+		Imm = Imm32;
+
+	end `OP_VMOV: begin 
+		DestVRegIdx = I_IR[21:16];
+		VecSrc1Value = RF[I_IR[13:8]];
+		
+		dep_stall =
+			((I_IR[13:8] == I_EDDestVRegIdx) && I_EDDestVWrite) || 
+			((I_IR[13:8] == I_MDDestVRegIdx) && I_MDDestVWrite);
+
+	end `OP_VMOVI: begin
+		DestVRegIdx = I_IR[21:16];
+		Imm = Imm32;
+		
+	end `OP_CMP: begin
+		Src1Value = RF[I_IR[19:16]];
+		Src2Value = RF[I_IR[11:8]];
+		 
+		dep_stall =
+			((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) ||
+			((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite) ||
+			((I_IR[11:8]  == I_EDDestRegIdx) && I_EDDestWrite) ||
+			((I_IR[11:8]  == I_MDDestRegIdx) && I_MDDestWrite);
+				
+	end `OP_CMPI: begin
+		Src1Value = RF[I_IR[19:16]];
+		
+		dep_stall =
+			((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) ||
+			((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite);
+	     
+	end `OP_VCOMPMOV: begin
+		DestVRegIdx = I_IR[21:16];
+		Src1Value = RF[I_IR[11:8]];
+		Idx = I_IR[23:22];  // UNSURE IF SUPPOSED TO BE I_IR[23:22] or RF[I_IR[23:22]]
+	   
+		dep_stall =
+			((I_IR[11:8] == I_EDDestRegIdx) && I_EDDestWrite) ||
+			((I_IR[11:8] == I_MDDestRegIdx) && I_MDDestWrite);
+			
+	end `OP_VCOMPMOVI: begin
+		DestVRegIdx = I_IR[21:16];
+		Imm = Imm32;
+		Idx = I_IR[23:22];  // UNSURE IF SUPPOSED TO BE I_IR[23:22] or RF[I_IR[23:22]]
+	     
+	/*end `OP_LDB: begin*/
+
+	end `OP_LDW: begin
+		Src1Value = RF[I_IR[19:16]];
+		DestRegIdx = RF[I_IR[23:20]];
+		Imm = Imm32;
+
+		dep_stall =
 				((I_IR[19:16] == I_EDDestRegIdx) && I_EDDestWrite) || 
 				((I_IR[19:16] == I_MDDestRegIdx) && I_MDDestWrite);
 
-	/*end `OP_VADD: begin 
-
-	end `OP_AND_D: begin
-
-	end `OP_ANDI_D: begin
-
-	end `OP_MOV: begin 
-
-	end `OP_MOVI_D: begin 
-
-	end `OP_MOVI_F: begin 
-
-	end `OP_VMOV: begin 
-
-	end `OP_VMOVI: begin 
-
-	end `OP_CMP: begin
-	      
-	end `OP_CMPI: begin
-	     
-	end `OP_VCOMPMOV: begin
-	     
-	end `OP_VCOMPMOVI: begin
-	     
-	end `OP_LDB: begin
-
-	end `OP_LDW: begin
-
-	end `OP_STB: begin*/
+	/*end `OP_STB: begin*/
 
 	end `OP_STW: begin
 		Src1Value = RF[I_IR[19:16]];
